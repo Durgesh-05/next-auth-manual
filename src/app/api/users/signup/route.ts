@@ -35,7 +35,7 @@ export const POST = async (req: NextRequest) => {
 
     await user.save();
 
-    await sendEmail({
+    sendEmail({
       username: username,
       email: email,
       emailType: EmailType.Verify,
@@ -44,7 +44,7 @@ export const POST = async (req: NextRequest) => {
 
     return NextResponse.json({
       message: 'Verification Email Sent',
-      status: 200,
+      status: 201,
       success: true,
       user: {
         id: user._id,
