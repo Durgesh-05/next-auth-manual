@@ -13,10 +13,13 @@ export const POST = async (req: NextRequest) => {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return NextResponse.json({
-        message: 'User Registered Already',
-        status: 400,
-      });
+      return NextResponse.json(
+        {
+          message: 'User Registered Already',
+          status: 400,
+        },
+        { status: 400 }
+      );
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
@@ -35,29 +38,35 @@ export const POST = async (req: NextRequest) => {
 
     await user.save();
 
-    sendEmail({
+    await sendEmail({
       username: username,
       email: email,
       emailType: EmailType.Verify,
-      link: `${process.env.DOMAIN}/api/users/verify/${hashToken}`,
+      link: `${process.env.DOMAIN}/verify-email?token=${hashToken}`,
     });
 
-    return NextResponse.json({
-      message: 'Verification Email Sent',
-      status: 201,
-      success: true,
-      user: {
-        id: user._id,
-        email: user.email,
-        isVerified: user.isVerified,
+    return NextResponse.json(
+      {
+        message: 'Verification Email Sent',
+        status: 201,
+        success: true,
+        user: {
+          id: user._id,
+          email: user.email,
+          isVerified: user.isVerified,
+        },
       },
-    });
+      { status: 201 }
+    );
   } catch (e: any) {
     console.error('Failed to handle user registration Error: ', e);
-    return NextResponse.json({
-      message: 'Something Went Wrong!',
-      status: 500,
-      error: e.message,
-    });
+    return NextResponse.json(
+      {
+        message: 'Something Went Wrong!',
+        status: 500,
+        error: e.message,
+      },
+      { status: 500 }
+    );
   }
 };

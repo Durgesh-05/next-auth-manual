@@ -11,13 +11,19 @@ export const GET = async (req: NextRequest) => {
   );
 
   if (!user) {
-    return NextResponse.json({ message: 'User not Found', status: 401 });
+    return NextResponse.json(
+      { message: 'User not Found', status: 401 },
+      { status: 401 }
+    );
   }
 
-  return NextResponse.json({
-    message: 'User Data Fetched Successfully',
-    status: 200,
-    success: true,
-    user,
-  });
+  return NextResponse.json(
+    {
+      message: 'User Data Fetched Successfully',
+      status: 200,
+      success: true,
+      user,
+    },
+    { status: 200 }
+  );
 };

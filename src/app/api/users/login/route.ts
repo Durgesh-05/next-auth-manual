@@ -13,27 +13,36 @@ export const POST = async (req: NextRequest) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return NextResponse.json({
-        message: 'Email not Found',
-        status: 400,
-      });
+      return NextResponse.json(
+        {
+          message: 'Email not Found',
+          status: 400,
+        },
+        { status: 400 }
+      );
     }
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
-      return NextResponse.json({
-        message: 'Incorrect Password',
-        status: 400,
-      });
+      return NextResponse.json(
+        {
+          message: 'Incorrect Password',
+          status: 400,
+        },
+        { status: 400 }
+      );
     }
 
     const token = generateAcessToken(user._id, user.email, user.username);
-    const res = NextResponse.json({
-      message: 'User LoggedIn Successfully',
-      status: 200,
-      success: true,
-      token: token,
-    });
+    const res = NextResponse.json(
+      {
+        message: 'User LoggedIn Successfully',
+        status: 200,
+        success: true,
+        token: token,
+      },
+      { status: 200 }
+    );
 
     res.cookies.set('token', token, {
       httpOnly: true,
@@ -43,11 +52,14 @@ export const POST = async (req: NextRequest) => {
     return res;
   } catch (e: any) {
     console.error('Failed to login user Error: ', e);
-    return NextResponse.json({
-      message: 'Something Went Wrong!',
-      status: 500,
-      error: e.message,
-    });
+    return NextResponse.json(
+      {
+        message: 'Something Went Wrong!',
+        status: 500,
+        error: e.message,
+      },
+      { status: 500 }
+    );
   }
 };
 
